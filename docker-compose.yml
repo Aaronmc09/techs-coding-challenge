@@ -3,7 +3,7 @@ version: "3.3"
 services:
 
   db:
-    container_name: postgresql_db
+    container_name: db
     image: postgres
     restart: always
     ports:
@@ -16,7 +16,12 @@ services:
   api:
     container_name: api
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+      - REDIS_URL=${REDIS_URL}
     volumes:
       - type: bind
         source: ./src
@@ -34,12 +39,15 @@ services:
   celery_worker:
     container_name: celery_worker
     build: .
-    command: celery -A celery_worker.celery worker --loglevel=info
+    command: celery -A src worker -B -l info
     volumes:
       - type: bind
         source: ./src
         target: /api
     environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
       - REDIS_URL=${REDIS_URL}
     depends_on:
       - api
