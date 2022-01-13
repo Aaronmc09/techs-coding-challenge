@@ -1,0 +1,46 @@
+version: "3.3"
+
+services:
+
+  db:
+    container_name: postgresql_db
+    image: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+
+  api:
+    container_name: api
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - type: bind
+        source: ./src
+        target: /api
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+    restart: always
+    
+  redis:
+    container_name: redis
+    image: redis:6.2-alpine
+    
+  celery_worker:
+    container_name: celery_worker
+    build: .
+    command: celery -A celery_worker.celery worker --loglevel=info
+    volumes:
+      - type: bind
+        source: ./src
+        target: /api
+    environment:
+      - REDIS_URL=${REDIS_URL}
+    depends_on:
+      - api
+      - redis
