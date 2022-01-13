@@ -6,12 +6,17 @@
 
 ##API
 * Access API on host `GET: 0.0.0.0:8000/api`
-* Get specific data via ID `GET: 0.0.0.0:8000/api/{id}`
+* Get specific record via ID `GET: 0.0.0.0:8000/api/{id}`
 
 
-* Update specific data via ID 
+* Update specific record via ID 
 * `{'school_name': 'New name'}`
 * `PUT: 0.0.0.0:8000/api/{id}`
+
+
+* Create new record
+* `{'school_name': 'New name'}`
+* `POST: 0.0.0.0:8000/api/`
 
 
 * Search DBN via `GET: 0.0.0.0:8000/api?q={DBN}`

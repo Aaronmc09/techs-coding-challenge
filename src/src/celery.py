@@ -66,6 +66,7 @@ def load_data(**kwargs):
             cursor.execute(sql_insert)
             _id += 1
 
+        cursor.execute("SELECT setval('records_id_seq', (SELECT MAX(id) FROM records)+1);")
         conn.commit()
 
     print("Load complete!")
