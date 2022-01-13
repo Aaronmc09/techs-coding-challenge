@@ -4,17 +4,20 @@ from . import serializers
 
 
 class Records(
+    serializers.QueryMixin,
     viewsets.GenericViewSet,
     mixins.ListModelMixin,
     mixins.RetrieveModelMixin,
     mixins.CreateModelMixin,
-    mixins.UpdateModelMixin
+    mixins.UpdateModelMixin,
 ):
 
     lookup_field = 'id'
+    permission_classes = []
 
-    def get_queryset(self):
-        return Record.objects.all()
+    model = Record
+    query_key = 'dbn'
+    query_param_key = 'q'
 
     def get_serializer_class(self):
         if self.action in ('create', 'update'):

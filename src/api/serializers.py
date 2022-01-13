@@ -1,8 +1,30 @@
-from rest_framework import serializers
+from rest_framework import filters
 from .models import Record
-
-
 from rest_framework import serializers, response, status
+
+
+class QueryMixin(object):
+
+    query_key = 'id'
+    query_param_key = 'query'
+    model = None
+    request = None
+
+    filter_backends = (filters.OrderingFilter,)
+    ordering = ('id',)
+
+    def get_base_query(self):
+        return getattr(self.model, 'objects').all()
+
+    def get_queryset(self):
+        queryset = self.get_base_query()
+        query = self.request.GET.get(self.query_param_key, None)
+
+        if query:
+            kwargs = {f'{self.query_key}__icontains': query}
+            queryset = queryset.filter(**kwargs)
+
+        return queryset
 
 
 class ResponseMixin(serializers.BaseSerializer):
