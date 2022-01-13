@@ -28,4 +28,4 @@ class Records(
         if serializer.is_valid():
             self.perform_create(serializer)
 
-        return serializer.as_response(error_message='Unable to create pet.')
+        return serializer.as_response(error_message='Unable to create record.')

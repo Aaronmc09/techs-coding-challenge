@@ -46,7 +46,7 @@ class Record(models.Model):
     math_level_3 = models.IntegerField(blank=True, null=True)
     math_level_4 = models.IntegerField(blank=True, null=True)
 
-    def get_percentage(self, total_field: str, value_field) -> float:
+    def get_percentage(self, total_field: str, value_field: str) -> float:
         total = self.__getattribute__(total_field)
         value = self.__getattribute__(value_field)
 

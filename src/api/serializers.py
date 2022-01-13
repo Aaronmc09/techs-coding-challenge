@@ -43,8 +43,6 @@ class ResponseMixin(serializers.BaseSerializer):
         if developer_message:
             new_data['developer_message'] = developer_message
 
-        print("here")
-
         return response.Response(new_data, status=status_code)
 
     def as_response(self, success_status_code: int = status.HTTP_200_OK,
@@ -68,4 +66,4 @@ class ReadRecord(WriteRecord):
     class Meta:
         model = Record
         fields = '__all__'
-        read_only_fields = fields
+        read_only = True
